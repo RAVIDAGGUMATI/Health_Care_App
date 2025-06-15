@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build:
+      context: ../../
+    container_name: fastapi-app
+    ports:
+      - "8000:8000"
+    networks:
+      - zapnet
+
+  zap:
+    image: owasp/zap2docker-stable
+    container_name: zap-scanner
+    depends_on:
+      - fastapi
+    entrypoint: >
+      /bin/sh -c "
+        echo 'Waiting for FastAPI...';
+        until curl -s http://fastapi:8000/docs; do
+          sleep 5;
+        done;
+        zap-api-scan.py -t http://fastapi:8000/docs/openapi.json -f openapi -r /zap/wrk/zap_report.html -d
+      "
+    volumes:
+      - ./zap_report.html:/zap/wrk/zap_report.html
+    networks:
+      - zapnet
+
+networks:
+  zapnet:

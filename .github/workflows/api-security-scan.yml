@@ -1,0 +1,26 @@
+name: API Security Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  zap-api-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        run: |
+          docker-compose -f .github/zap/docker-compose.yml up --abort-on-container-exit --exit-code-from zap
+
+      - name: Upload ZAP Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-api-report
+          path: .github/zap/zap_report.html

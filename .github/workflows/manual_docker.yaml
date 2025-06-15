@@ -10,7 +10,7 @@ jobs:
 
     services:
       web:
-        image: ghcr.io/ravidaggumati/Health_Care_App
+        image: ghcr.io/ravidaggumati/health_care_app
         ports:
           - 8000:8000
 

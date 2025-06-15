@@ -10,7 +10,7 @@ jobs:
 
     services:
       web:
-        image: ghcr.io/ravidaggumati/health_care_app
+        image: ghcr.io/ravidaggumati/health-care-management-system-python-fastapi-app:latest
         ports:
           - 8000:8000
 

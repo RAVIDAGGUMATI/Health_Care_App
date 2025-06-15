@@ -33,9 +33,6 @@ jobs:
     - name: Create Docker network
       run: docker network create zapnet
 
-    - name: Run FastAPI container
-      run: docker run -d --rm --name fastapi-app --network zapnet -p 8000:8000 fastapi-app
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -61,7 +58,7 @@ jobs:
         docker run --rm --network zapnet \
           -v $(pwd):/zap/wrk:rw \
           ghcr.io/zaproxy/zaproxy:stable \
-          zap-api-scan.py -t http://fastapi-app:8000/openapi.json -f openapi -r zap_report.html
+          zap-api-scan.py -t http://localhost:8000/openapi.json -f openapi -r zap_report.html
 
     - name: Upload ZAP report
       uses: actions/upload-artifact@v4

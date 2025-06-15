@@ -28,11 +28,22 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Start FastAPI app (background)
+    - name: Install FastAPI & Uvicorn
       run: |
-        pip install uvicorn
-        nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 & 
-        sleep 10
+        pip install fastapi uvicorn
+
+    - name: Start FastAPI in Background
+      run: |
+        nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+        for i in {1..10}; do
+          if curl -s http://localhost:8000/docs > /dev/null; then
+            echo "FastAPI app is up!"
+            break
+          else
+            echo "Waiting for FastAPI..."
+            sleep 5
+          fi
+        done
 
     - name: ZAP Scan
       uses: zaproxy/action-full-scan@v0.10.0

@@ -26,16 +26,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install uvicorn
-
-      - name: Run FastAPI in background
+     
+      - name: Start FastAPI app
         run: |
-          nohup uvicorn main:app --host 0.0.0.0 --port 8000 &
+          nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 &
           sleep 10
 
       - name: Run ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.9.0
         with:
-          target: 'http://localhost:8000/docs'
-
-     
-  
+          target: "http://localhost:8000/docs"

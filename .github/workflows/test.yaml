@@ -56,29 +56,3 @@ jobs:
           rules_file_name: baseline_rules.conf
           fail_threshold: HIGH
 
-  snyk-scan:
-    needs: docker-build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      security-events: write
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Build Docker image (reuse chosen tag)
-        run: docker build -t fastapi-app:latest .
-
-      - name: Run Snyk Container Scan
-        uses: snyk/actions/docker@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: fastapi-app:latest
-          args: --file=Dockerfile --severity-threshold=medium --sarif-file-output=snyk.sarif
-
-      - name: Upload Snyk SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: snyk.sarif

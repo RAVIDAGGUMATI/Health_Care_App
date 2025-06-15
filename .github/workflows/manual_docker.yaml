@@ -66,7 +66,7 @@ jobs:
       - name: Run ZAP API Scan
         run: |
           zap-api-scan.py \
-            -t http://localhost/openapi.json \
+            -t http://localhost:8000/openapi.json \
             -f openapi \
             -r zap_report.html \
             -d
